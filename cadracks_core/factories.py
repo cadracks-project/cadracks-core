@@ -20,7 +20,8 @@
 r"""Creation of anchorable parts from various sources"""
 
 from os.path import basename, splitext, join, dirname
-import imp
+# import imp
+import importlib.util
 import logging
 import json
 
@@ -90,7 +91,10 @@ def part_from_json(json_file, data_variant="nominal", language="en"):
 
     script_path = json_content["script"]
 
-    mod = imp.load_source(script_path, script_path)
+    spec = importlib.util.spec_from_file_location(script_path, script_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    # mod = imp.load_source(script_path, script_path)
 
     data_nominal = {k: v for (k, v) in json_content["data"].items() if "__"+data_variant in k}
     data = {k.replace("__"+data_variant, ""): v for (k, v) in data_nominal.items()}
@@ -153,7 +157,10 @@ def anchorable_part_from_py_script(py_script_path):
 
     """
     name, _ = splitext(basename(py_script_path))
-    module_ = imp.load_source(name, py_script_path)
+    spec = importlib.util.spec_from_file_location(name, py_script_path)
+    module_ = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module_)
+    # module_ = imp.load_source(name, py_script_path)
 
     return AnchorablePart(shape=module_.__shape__,
                           name=name,
@@ -180,8 +187,11 @@ def anchorable_part_from_library(library_file_path, part_id):
     generate(library_file_path)
     scripts_folder = join(dirname(library_file_path), "scripts")
     module_path = join(scripts_folder, "%s.py" % part_id)
-    module_ = imp.load_source(splitext(module_path)[0],
-                              module_path)
+
+    spec = importlib.util.spec_from_file_location(splitext(module_path)[0], module_path)
+    module_ = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module_)
+    # module_ = imp.load_source(splitext(module_path)[0], module_path)
 
     if not hasattr(module_, '__shape__'):
         msg = "The Python module should have a '__shape__' variable"

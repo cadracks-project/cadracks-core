@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 __name__ = "cadracks_core"
 __description__ = "Complex product modelling"
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __release__ = __version__
 __author__ = "Guillaume Florent, Thomas Paviot, Bernard Uguen"
 __author_email__ = "guillaume.florent@tutanota.com"
