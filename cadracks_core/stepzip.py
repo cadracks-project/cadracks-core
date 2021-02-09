@@ -76,7 +76,7 @@ def extract_stepzip(stepzip):
         elif ext in [".json", ".JSON"]:
             part_data_file_path = join(dirname(stepzip), name)
         else:
-            msg = "Unknown file type in zip"
+            msg = f"Unknown file type in zip with extension {ext}"
             logger. error(msg)
             raise ValueError(msg)
     zip_ref.extractall(dirname(stepzip))
